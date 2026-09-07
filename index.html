@@ -328,7 +328,11 @@ const nextButton = document.getElementById("nextButton");
 
 const gameScreen = document.getElementById("gameScreen");
 const completionScreen = document.getElementById("completionScreen");
-const resultsList = document.getElementById("resultsList");
+const resultsTableBody =
+    document.getElementById("resultsTableBody");
+
+const totalGuessesDisplay =
+    document.getElementById("totalGuesses");
 const playAgainButton = document.getElementById("playAgainButton");
 
 function randomPrice(min, max) {
@@ -454,16 +458,24 @@ function showResults() {
     gameScreen.classList.add("hidden");
     completionScreen.classList.remove("hidden");
 
-    resultsList.innerHTML = "";
+    resultsTableBody.innerHTML = "";
+
+    const totalGuesses =
+        results.reduce((sum, item) => sum + item.guesses, 0);
+
+    totalGuessesDisplay.textContent =
+        `Total guesses: ${totalGuesses}`;
 
     results.forEach(result => {
 
-        const li = document.createElement("li");
+        const row = document.createElement("tr");
 
-        li.textContent =
-            `${result.item}: ${result.guesses} guesses`;
+        row.innerHTML = `
+            <td>${result.item}</td>
+            <td>${result.guesses}</td>
+        `;
 
-        resultsList.appendChild(li);
+        resultsTableBody.appendChild(row);
     });
 }
 
