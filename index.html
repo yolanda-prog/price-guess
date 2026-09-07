@@ -135,16 +135,49 @@ body {
         display: none;
     }
 
-    .results-list {
-        text-align: left;
-        max-width: 400px;
-        margin: 20px auto;
-        font-size: 1.3rem;
-    }
+  .total-guesses {
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin: 20px 0;
+    color: #1565c0;
+}
 
-    .results-list li {
-        margin-bottom: 10px;
-    }
+.results-table {
+    width: 100%;
+    max-width: 500px;
+    margin: 20px auto 30px;
+    border-collapse: collapse;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.results-table th {
+    background-color: #1565c0;
+    color: white;
+    padding: 14px;
+    font-size: 1.2rem;
+}
+
+.results-table td {
+    padding: 14px;
+    border: 1px solid #ddd;
+    font-size: 1.2rem;
+}
+
+.results-table tr:nth-child(even) {
+    background-color: #f7f7f7;
+}
+
+.results-table tr:nth-child(odd) {
+    background-color: white;
+}
+
+.results-table td:last-child,
+.results-table th:last-child {
+    text-align: center;
+    width: 120px;
+}
 
     @media (max-width: 600px) {
         .appliance-name {
@@ -205,19 +238,29 @@ body {
 
     </div>
 
-    <div id="completionScreen" class="hidden">
+   <div id="completionScreen" class="hidden">
 
-        <h1>Well done!</h1>
+    <h1>Well done!</h1>
 
-        <h2>You found all the prices!</h2>
+    <h2>You found all the prices!</h2>
 
-        <ul class="results-list" id="resultsList"></ul>
+    <div id="totalGuesses" class="total-guesses"></div>
 
-        <button class="play-again-btn" id="playAgainButton">
-            PLAY AGAIN
-        </button>
+    <table class="results-table">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Guesses</th>
+            </tr>
+        </thead>
+        <tbody id="resultsTableBody"></tbody>
+    </table>
 
-    </div>
+    <button class="play-again-btn" id="playAgainButton">
+        PLAY AGAIN
+    </button>
+
+</div>
 
 </div>
 
