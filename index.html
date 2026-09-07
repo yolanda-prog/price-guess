@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Price Guessing Game</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body,
+input,
+button {
+    font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+    background-color: #f5f5f5;
+    color: #000;
+}
+
+
+    .container {
+        max-width: 700px;
+        margin: 0 auto;
+        text-align: center;
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
+
+    h1, h2 {
+        margin-top: 10px;
+    }
+
+    .item-number {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .appliance-name {
+        font-size: 2rem;
+        font-weight: bold;
+        margin: 15px 0;
+    }
+
+    .product-image {
+        width: 100%;
+        max-width: 400px;
+        height: 250px;
+        object-fit: cover;
+        border: 3px solid #333;
+        border-radius: 10px;
+        background-color: #ddd;
+    }
+
+    .range-box {
+        margin: 20px auto;
+        padding: 15px;
+        background-color: #ffeb3b;
+        border: 3px solid #000;
+        border-radius: 10px;
+        font-size: 1.6rem;
+        font-weight: bold;
+        max-width: 350px;
+    }
+
+    .guess-count {
+        font-size: 1.2rem;
+        margin: 15px 0;
+    }
+
+    .input-label {
+        font-size: 1.4rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    input[type="number"] {
+        width: 100%;
+        max-width: 300px;
+        padding: 15px;
+        font-size: 2rem;
+        text-align: center;
+        border: 3px solid #000;
+        border-radius: 10px;
+    }
+
+    button {
+        display: block;
+        width: 100%;
+        max-width: 300px;
+        margin: 15px auto;
+        padding: 18px;
+        font-size: 1.4rem;
+        font-weight: bold;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+
+    .guess-btn {
+        background-color: #1565c0;
+        color: white;
+    }
+
+    .next-btn {
+        background-color: #2e7d32;
+        color: white;
+    }
+
+    .play-again-btn {
+        background-color: #6a1b9a;
+        color: white;
+    }
+
+    .feedback {
+        margin-top: 20px;
+        min-height: 60px;
+        font-size: 1.6rem;
+        font-weight: bold;
+    }
+
+    .success {
+        color: #2e7d32;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .results-list {
+        text-align: left;
+        max-width: 400px;
+        margin: 20px auto;
+        font-size: 1.3rem;
+    }
+
+    .results-list li {
+        margin-bottom: 10px;
+    }
+
+    @media (max-width: 600px) {
+        .appliance-name {
+            font-size: 1.8rem;
+        }
+
+        .range-box {
+            font-size: 1.4rem;
+        }
+
+        input[type="number"] {
+            font-size: 1.8rem;
+        }
+
+        button {
+            font-size: 1.3rem;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div id="gameScreen">
+
+        <div class="item-number" id="itemNumber"></div>
+
+        <div class="appliance-name" id="applianceName"></div>
+
+        <img id="productImage" class="product-image" src="" alt="Appliance">
+
+        <div class="range-box" id="priceRange"></div>
+
+        <div class="guess-count" id="guessCount">Guesses: 0</div>
+
+        <div class="input-label">Enter your guess</div>
+
+        <input
+            type="number"
+            id="guessInput"
+          min="0"
+            step="1"
+            inputmode="numeric"
+            placeholder="$"
+        >
+
+        <button class="guess-btn" id="guessButton">
+            GUESS
+        </button>
+
+        <div class="feedback" id="feedback"></div>
+
+        <button class="next-btn hidden" id="nextButton">
+            NEXT
+        </button>
+
+    </div>
+
+    <div id="completionScreen" class="hidden">
+
+        <h1>Well done!</h1>
+
+        <h2>You found all the prices!</h2>
+
+        <ul class="results-list" id="resultsList"></ul>
+
+        <button class="play-again-btn" id="playAgainButton">
+            PLAY AGAIN
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+///////////////////////////////////////////////////////////////////////////
+// EASY-TO-EDIT IMAGE PATHS
+///////////////////////////////////////////////////////////////////////////
+
+const appliances = [
+    {
+        name: "Toaster",
+        min: 50,
+        max: 100,
+        image: "images/toaster.jpg"
+    },
+    {
+        name: "Kettle",
+        min: 50,
+        max: 150,
+        image: "images/kettle.jpg"
+    },
+    {
+        name: "Air Fryer",
+        min: 100,
+        max: 300,
+        image: "images/air-fryer.jpg"
+    },
+    {
+        name: "Microwave",
+        min: 100,
+        max: 400,
+        image: "images/microwave.jpg"
+    },
+    {
+        name: "Washing Machine",
+        min: 400,
+        max: 700,
+        image: "images/washing-machine.jpg"
+    },
+    {
+        name: "Fridge",
+        min: 500,
+        max: 999,
+        image: "images/fridge.jpg"
+    }
+];
+
+///////////////////////////////////////////////////////////////////////////
+
+let currentItem = 0;
+let currentPrice = 0;
+let guessesForCurrentItem = 0;
+let results = [];
+
+const itemNumber = document.getElementById("itemNumber");
+const applianceName = document.getElementById("applianceName");
+const productImage = document.getElementById("productImage");
+const priceRange = document.getElementById("priceRange");
+const guessCount = document.getElementById("guessCount");
+const guessInput = document.getElementById("guessInput");
+const guessButton = document.getElementById("guessButton");
+const feedback = document.getElementById("feedback");
+const nextButton = document.getElementById("nextButton");
+
+const gameScreen = document.getElementById("gameScreen");
+const completionScreen = document.getElementById("completionScreen");
+const resultsList = document.getElementById("resultsList");
+const playAgainButton = document.getElementById("playAgainButton");
+
+function randomPrice(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function loadItem() {
+
+    const item = appliances[currentItem];
+
+    currentPrice = randomPrice(item.min, item.max);
+    guessesForCurrentItem = 0;
+
+    itemNumber.textContent =
+        `Item ${currentItem + 1} of ${appliances.length}`;
+
+    applianceName.textContent = item.name;
+
+    productImage.src = item.image;
+
+    priceRange.textContent =
+        `Price range: $${item.min} - $${item.max}`;
+
+    guessCount.textContent = "Guesses: 0";
+
+    guessInput.value = "";
+
+    feedback.textContent = "";
+
+    feedback.classList.remove("success");
+
+    nextButton.classList.add("hidden");
+
+    guessButton.disabled = false;
+
+    guessInput.disabled = false;
+
+    guessInput.focus();
+}
+
+function handleGuess() {
+
+    const item = appliances[currentItem];
+    const value = guessInput.value.trim();
+
+    if (!/^\d+$/.test(value)) {
+        feedback.textContent =
+            "Please enter a whole dollar amount.";
+        return;
+    }
+
+    const guess = parseInt(value, 10);
+
+    if (guess < item.min || guess > item.max) {
+        feedback.textContent =
+            `Please enter a value between $${item.min} and $${item.max}.`;
+        return;
+    }
+
+    guessesForCurrentItem++;
+
+    guessCount.textContent =
+        `Guesses: ${guessesForCurrentItem}`;
+
+    const difference = Math.abs(guess - currentPrice);
+
+    if (difference === 0) {
+
+        feedback.innerHTML =
+            `Correct!<br>The price is $${currentPrice}.`;
+
+        feedback.classList.add("success");
+
+        nextButton.classList.remove("hidden");
+
+        guessButton.disabled = true;
+        guessInput.disabled = true;
+
+        results.push({
+            item: item.name,
+            guesses: guessesForCurrentItem
+        });
+
+        return;
+    }
+
+    let direction = "";
+
+    if (guess < currentPrice) {
+        direction = "Try higher.";
+    } else {
+        direction = "Try lower.";
+    }
+
+    if (difference >= 1 && difference <= 5) {
+        feedback.textContent =
+            `Very close! ${direction}`;
+    }
+    else if (difference >= 6 && difference <= 10) {
+        feedback.textContent =
+            `Close! ${direction}`;
+    }
+    else {
+        feedback.textContent = direction;
+    }
+
+    guessInput.select();
+}
+
+function nextItem() {
+
+    currentItem++;
+
+    if (currentItem < appliances.length) {
+        loadItem();
+    } else {
+        showResults();
+    }
+}
+
+function showResults() {
+
+    gameScreen.classList.add("hidden");
+    completionScreen.classList.remove("hidden");
+
+    resultsList.innerHTML = "";
+
+    results.forEach(result => {
+
+        const li = document.createElement("li");
+
+        li.textContent =
+            `${result.item}: ${result.guesses} guesses`;
+
+        resultsList.appendChild(li);
+    });
+}
+
+function startGame() {
+
+    currentItem = 0;
+    results = [];
+
+    completionScreen.classList.add("hidden");
+    gameScreen.classList.remove("hidden");
+
+    loadItem();
+}
+
+guessButton.addEventListener("click", handleGuess);
+
+nextButton.addEventListener("click", nextItem);
+
+playAgainButton.addEventListener("click", startGame);
+
+guessInput.addEventListener("keydown", function(event) {
+    if (event.key === "Enter" && !guessButton.disabled) {
+        handleGuess();
+    }
+});
+
+startGame();
+
+</script>
+
+</body>
+</html>
