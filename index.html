@@ -249,7 +249,7 @@ body {
     </button>
 
 </div>
-    <div id="gameScreen">
+    <div id="gameScreen" class="hidden">
 
         <div class="item-number" id="itemNumber"></div>
 
@@ -362,6 +362,11 @@ let currentPrice = 0;
 let guessesForCurrentItem = 0;
 let results = [];
 
+const startScreen =
+    document.getElementById("startScreen");
+
+const startButton =
+    document.getElementById("startButton");
 const itemNumber = document.getElementById("itemNumber");
 const applianceName = document.getElementById("applianceName");
 const productImage = document.getElementById("productImage");
@@ -381,6 +386,14 @@ const totalGuessesDisplay =
     document.getElementById("totalGuesses");
 const playAgainButton = document.getElementById("playAgainButton");
 
+function beginGame() {
+
+    startScreen.classList.add("hidden");
+
+    gameScreen.classList.remove("hidden");
+
+    loadItem();
+}
 function randomPrice(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -531,11 +544,10 @@ function startGame() {
     results = [];
 
     completionScreen.classList.add("hidden");
-    gameScreen.classList.remove("hidden");
-
-    loadItem();
+    startScreen.classList.remove("hidden");
+    gameScreen.classList.add("hidden");
 }
-
+startButton.addEventListener("click", beginGame);
 guessButton.addEventListener("click", handleGuess);
 
 nextButton.addEventListener("click", nextItem);
@@ -548,7 +560,8 @@ guessInput.addEventListener("keydown", function(event) {
     }
 });
 
-startGame();
+gameScreen.classList.add("hidden");
+completionScreen.classList.add("hidden");
 
 </script>
 
